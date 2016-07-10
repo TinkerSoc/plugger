@@ -10,6 +10,15 @@ The following radios appear to be clones and have interoperable codeplugs:
   * TYT MD-380
   * Retevis RT3
 
+# Commands
+
+## `plugger-dump`
+
+Dumps the provided file's data structures after unmarshalling. Provides a
+textual output and count of contacts, RX groups, etc.
+
+Useful for debugging difficult-to-handle codeplugs.
+
 # Copyright
 
 Copyright (c) 2016 Joe Harrison
