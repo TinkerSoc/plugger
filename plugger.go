@@ -19,7 +19,7 @@ const (
 	// ContactIDBytes is the number of bytes in a contact ID.
 	ContactIDBytes = 3
 	// ContactIDMax is the highest contact ID which can be encoded.
-	ContactIDMax = 2 ^ 24
+	ContactIDMax = 16777215
 
 	// LabelLen is the number of bytes permitted in an encoded label.
 	LabelLen = 32
