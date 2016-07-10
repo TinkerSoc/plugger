@@ -13,3 +13,5 @@ The following radios appear to be clones and have interoperable codeplugs:
 # Copyright
 
 Copyright (c) 2016 Joe Harrison
+
+I'm yet to decide on a license, so I'm retaining full copyright until then.
