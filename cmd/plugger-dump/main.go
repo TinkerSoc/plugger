@@ -3,20 +3,21 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
-	"io/ioutil"
+	"log"
 	"os"
+	"time"
 
 	"github.com/TinkerSoc/plugger"
+	"github.com/TinkerSoc/plugger/format"
 )
 
 func main() {
 	var fileName string
 	// Read the filename from the command line
 	flag.StringVar(&fileName, "file", "default1.rdt", "RDT file to dump")
-
 	flag.Parse()
 
+	log.Printf("Reading RDT file from %s", fileName)
 	// open the RDT file
 	f, err := os.Open(fileName)
 	if err != nil {
@@ -24,33 +25,28 @@ func main() {
 	}
 	defer f.Close()
 
-	// Create a new Plug struct and read RDT file contents to memory.
-	plug := plugger.NewPlug()
-	b, err := ioutil.ReadAll(f)
+	dec := format.NewRDTDecoder(f)
+	var dst plugger.Plug
+
+	log.Print("Decoding RDT file")
+	start := time.Now()
+
+	err = dec.Decode(&dst)
+
+	log.Printf("Decoded in %s", time.Since(start))
 
 	if err != nil {
 		panic(err)
 	}
 
-	// Unmarshal the Plug
-	err = plug.UnmarshalBinary(b)
+	log.Printf("Plug summary: %d contacts, %d rx groups.", len(dst.Contacts), len(dst.RxGroups))
 
-	// io.EOF is okay.
-	if err != nil && err != io.EOF {
-		panic(err)
+	for n, c := range dst.Contacts {
+		fmt.Printf("Contact %04d: %+v\n", n+1, c)
 	}
 
-	for i, c := range plug.Contacts {
-		fmt.Printf("Contact #%04d: %+v\n", i+1, c)
+	for n, g := range dst.RxGroups {
+		fmt.Printf("RX Group %03d: %+v\n", n+1, g)
 	}
 
-	fmt.Println()
-
-	for i, g := range plug.RxGroups {
-		fmt.Printf("RX Group %d: %+v\n", i+1, g)
-	}
-
-	fmt.Println()
-	fmt.Printf("Number of contacts: %d\n", len(plug.Contacts))
-	fmt.Printf("Number of rx groups: %d\n", len(plug.RxGroups))
 }
